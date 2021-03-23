@@ -1,0 +1,36 @@
+<?php
+
+// koneksi
+$conn = new mysqli('localhost', 'root', '', 'db_netly');
+
+if (isset($_POST['tampilkan'])) {
+  $bln = date($_POST['bulan']);
+  $tahun = $_POST['tahun'];
+  $cabang = $_POST['cabang'] ?? '';
+
+
+  if (!empty($bln)) {
+
+    // perintah tampil data berdasarkan periode bulan
+    $q = mysqli_query($conn, "SELECT tb_keuntunganharian.tanggal , tb_keuntunganharian.cabang , tb_keuntunganharian.totalkeuntungan , tb_pengeluaranharian.totalpengeluaran 
+    FRO-M tb_keuntunganharian , tb_pengeluaranharian 
+    WHERE month (tb_keuntunganharian.tanggal) = '$bln' and year (tb_keuntunganharian.tanggal) = '$tahun' and (tb_keuntunganharian.cabang) = '$cabang'and (tb_pengeluaranharian.cabang)='$cabang' and month (tb_pengeluaranharian.tanggal) = '$bln'
+    ");
+  } else {
+    // perintah tampil semua data
+    $q = mysqli_query($conn, "SELECT tb_keuntunganharian.tanggal , tb_keuntunganharian.cabang , tb_keuntunganharian.totalkeuntungan , tb_pengeluaranharian.totalpengeluaran  
+    FROM tb_keuntunganharian , tb_pengeluaranharian 
+    ");
+  }
+} else {
+  // perintah tampil semua data
+  $q = mysqli_query($conn, "SELECT tb_keuntunganharian.tanggal , tb_keuntunganharian.cabang , tb_keuntunganharian.totalkeuntungan , tb_pengeluaranharian.totalpengeluaran 
+  FROM tb_keuntunganharian , tb_pengeluaranharian
+  ");
+}
+
+// hitung jumlah baris data
+$s = $q->num_rows;
+
+
+?>
